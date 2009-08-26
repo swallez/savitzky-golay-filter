@@ -108,10 +108,11 @@ public class MeanValuePadder implements Preprocessor {
 				}
 			}
 			double avg = 0;
-			for (int i = l; i < l + windowLength / 2; i++) {
+			int m = Math.min(l + windowLength / 2, n);
+			for (int i = l; i < m; i++) {
 				avg += data[i];
 			}
-			avg /= (windowLength / 2);
+			avg /= (m - l);
 			for (int i = 0; i < l; i++) {
 				data[i] = avg;
 			}
@@ -126,10 +127,11 @@ public class MeanValuePadder implements Preprocessor {
 				}
 			}
 			double avg = 0;
-			for (int i = 0; i < windowLength / 2; i++) {
+			int m = Math.min(windowLength / 2, r + 1);
+			for (int i = 0; i < m; i++) {
 				avg += data[r - i];
 			}
-			avg /= (windowLength / 2);
+			avg /= m;
 			for (int i = r + 1; i < n; i++) {
 				data[i] = avg;
 			}
