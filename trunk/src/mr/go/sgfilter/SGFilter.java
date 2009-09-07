@@ -87,6 +87,8 @@ public class SGFilter {
 			out[i] = in[i];
 	}
 
+	private final List<DataFilter> dataFilters = new ArrayList<DataFilter>();
+
 	private int nl;
 
 	private int nr;
@@ -109,6 +111,17 @@ public class SGFilter {
 			throw new IllegalArgumentException("Bad arguments");
 		this.nl = nl;
 		this.nr = nr;
+	}
+
+	/**
+	 * Appends data filter
+	 * 
+	 * @param dataFilter
+	 *            dataFilter
+	 * @see DataFilter
+	 */
+	public void appendDataFilter(DataFilter dataFilter) {
+		dataFilters.add(dataFilter);
 	}
 
 	/**
@@ -139,6 +152,19 @@ public class SGFilter {
 	}
 
 	/**
+	 * Inserts data filter
+	 * 
+	 * @param dataFilter
+	 *            data filter
+	 * @param index
+	 *            where it should be placed in data filters queue
+	 * @see DataFilter
+	 */
+	public void insertDataFilter(DataFilter dataFilter, int index) {
+		dataFilters.add(index, dataFilter);
+	}
+
+	/**
 	 * Inserts preprocessor
 	 * 
 	 * @param p
@@ -149,6 +175,29 @@ public class SGFilter {
 	 */
 	public void insertPreprocessor(Preprocessor p, int index) {
 		preprocessors.add(index, p);
+	}
+
+	/**
+	 * Removes data filter
+	 * 
+	 * @param dataFilter
+	 *            data filter to be removed
+	 * @return {@code true} if data filter existed and was removed, {@code
+	 *         false} otherwise
+	 */
+	public boolean removeDataFilter(DataFilter dataFilter) {
+		return dataFilters.remove(dataFilter);
+	}
+
+	/**
+	 * Removes data filter
+	 * 
+	 * @param index
+	 *            which data filter to remove
+	 * @return removed data filter
+	 */
+	public DataFilter removeDataFilter(int index) {
+		return dataFilters.remove(index);
 	}
 
 	/**
@@ -295,6 +344,9 @@ public class SGFilter {
 		if (bias < 0 || bias > nr || bias > nl)
 			throw new IllegalArgumentException(
 					"bias < 0 or bias > nr or bias > nl");
+		for (DataFilter dataFilter : dataFilters) {
+			data = dataFilter.filter(data);
+		}
 		int dataLength = data.length;
 		if (dataLength == 0)
 			return data;
