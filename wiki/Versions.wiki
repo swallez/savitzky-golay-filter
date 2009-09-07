@@ -1,0 +1,14 @@
+#summary Version history
+#labels Featured
+
+== v1 ==
+
+Initial import of the project
+
+=== r5 ===
+
+  * Fixed MeanValuePadder bug resulting in IndexOutOfBoundsException 
+
+== v1_1 ==
+
+  * Added DataFilter interface which adds ability to filter data points based on some algorithm. Currently package contains one implementation - based on [http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm Ramer-Douglas-Peucker algorithm]
