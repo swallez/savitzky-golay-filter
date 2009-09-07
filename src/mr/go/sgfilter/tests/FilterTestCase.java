@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import mr.go.sgfilter.ContinuousPadder;
 import mr.go.sgfilter.Linearizer;
 import mr.go.sgfilter.MeanValuePadder;
+import mr.go.sgfilter.RamerDouglasPeuckerFilter;
 import mr.go.sgfilter.SGFilter;
 import mr.go.sgfilter.ZeroEliminator;
 
@@ -35,6 +36,18 @@ public class FilterTestCase {
 				0.333, 0.28, 0.14, -0.023, -0.105, 0.042 };
 		assertEquals(11, coeffs.length);
 		assertCoeffsEqual(coeffs, tabularCoeffs);
+	}
+
+	@Test
+	public final void testDouglasPeuckerFilter() {
+		double[] coeffs = SGFilter.computeSGCoefficients(5, 5, 4);
+		float[] data = new float[] { 2.9f, 1.3f, 1.5f, 1.6f, 1.6f, 1, 1.5f, 2,
+				1.5f, 1, 1, 1, 1, 1, 1 };
+		double[] real = new double[] { 1.5680637, 1.3634019, 1.223775 };
+		SGFilter sgFilter = new SGFilter(5, 5);
+		sgFilter.appendDataFilter(new RamerDouglasPeuckerFilter(0.5));
+		float[] smooth = sgFilter.smooth(data, 5, 10, coeffs);
+		assertResultsEqual(smooth, real);
 	}
 
 	@Test
