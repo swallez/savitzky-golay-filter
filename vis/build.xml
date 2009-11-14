@@ -1,0 +1,106 @@
+<project name="coroutines" default="agent" basedir=".">
+	<property name="version" value="v1_0e" />
+	<property name="revision" value="" />
+	<property name="src" value="src" />
+	<property name="doc" value="doc" />
+	<property name="dist" value="dist" />
+	<property name="lib" value="lib" />
+	<property name="zip" value="zip" />
+	<property name="bin" value="bin" />
+	<property name="jarfile" value="${dist}/coroutines_user_${version}${revision}.jar" />
+	<property name="agentjar" value="${dist}/coroutines.jar" />
+	<property name="classgenPath" value="./gen_tests" />
+	<property name="printPath" value="./traces" />
+	<property name="agentopts" value=";-outputbin" />
+
+	<target name="build" description="compilation">
+		<mkdir dir="${bin}" />
+		<javac srcdir="${src}" destdir="${bin}" listfiles="on" source="1.6" target="1.6" debug="on" debuglevel="lines,source,vars">
+			<classpath>
+				<fileset dir="${lib}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="test" depends="agent" description="runs tests">
+		<mkdir dir="${classgenPath}" />
+		<mkdir dir="${printPath}" />
+		<junit printsummary="yes" fork="yes">
+			<jvmarg value="-XX:-FailOverToOldVerifier" />
+			<jvmarg value="-Dmr.go.coroutines.ClassgenPath=${classgenPath}" />
+			<jvmarg value="-Dmr.go.coroutines.PrintPath=${printPath}" />
+			<jvmarg value="-javaagent:${agentjar}=mr.go.coroutines.tests.classes.NumberGenerator;mr.go.coroutines.tests.classes.PeopleDb;mr.go.coroutines.tests.classes.Betting;mr.go.coroutines.tests.classes.Grep;mr.go.coroutines.tests.classes.LinePrinter;mr.go.coroutines.tests.classes.LineCounter;mr.go.coroutines.tests.classes.LineWriter;mr.go.coroutines.tests.classes.Tree;mr.go.coroutines.tests.classes.Decoder;mr.go.coroutines.tests.classes.StringReceiver;mr.go.coroutines.tests.classes.TelegramReceiver${agentopts}" />
+			<classpath>
+				<pathelement location="${bin}" />
+				<pathelement location="${classgenPath}" />
+				<fileset dir="${lib}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+			<formatter type="plain" />
+			<test name="mr.go.coroutines.tests.CoroutineTests" haltonfailure="no">
+			</test>
+		</junit>
+	</target>
+
+	<target name="jar" depends="build" description="creates jar library">
+		<mkdir dir="${dist}" />
+		<jar destfile="${jarfile}">
+			<fileset dir="${bin}">
+				<include name="mr/go/coroutines/user/**" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="agent" depends="build" description="creates agent jar library">
+		<mkdir dir="${dist}" />
+		<jar destfile="${agentjar}">
+			<fileset dir="${bin}">
+				<include name="mr/go/coroutines/core/**" />
+			</fileset>
+			<manifest>
+				<attribute name="Premain-Class" value="mr.go.coroutines.core.CoroutineAgent" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="clean" description="deletes all artifacts">
+		<delete file="${jarfile}" />
+		<delete file="${agentjar}" />
+		<delete dir="${dist}" />
+		<delete dir="${zip}" />
+		<delete dir="${bin}" />
+		<delete dir="${doc}" />
+		<delete dir="${classgenPath}" />
+		<delete dir="${printPath}" />
+	</target>
+
+	<target name="javadoc">
+		<javadoc access="public" author="true" source="1.6" destdir="${doc}" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="mr.go.coroutines.user" sourcepath="src" splitindex="true" use="true" version="false" />
+	</target>
+
+	<target depends="clean,jar,agent,javadoc" name="zip">
+		<mkdir dir="${zip}" />
+		<zip destfile="${zip}/coroutines_${version}${revision}.zip">
+			<zipfileset file="${jarfile}" />
+			<zipfileset file="${agentjar}" />
+			<zipfileset dir="doc" prefix="doc" />
+			<zipfileset dir="lib" prefix="lib" />
+			<zipfileset file="LICENSE.txt" />
+		</zip>
+
+		<zip destfile="${zip}/coroutines_${version}${revision}_src.zip">
+			<zipfileset file="${jarfile}" />
+			<zipfileset file="${agentjar}" />
+			<zipfileset file="licence.txt" />
+			<zipfileset dir="src" prefix="src" />
+			<zipfileset dir="lib" prefix="lib" />
+			<zipfileset dir="doc" prefix="doc" />
+			<zipfileset file="build.xml" />
+			<zipfileset file="LICENSE.txt" />
+		</zip>
+	</target>
+
+</project>
