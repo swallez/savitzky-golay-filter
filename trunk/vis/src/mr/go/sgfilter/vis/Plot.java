@@ -19,8 +19,9 @@ package mr.go.sgfilter.vis;
 import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 
-public class Plot {
+public class Plot implements Serializable {
 
 	private Color					color					= Color.BLACK;
 
@@ -147,4 +148,6 @@ public class Plot {
 	public static final String		PROP_VISIBLE		= "visible";
 
 	public static final String		PROP_XSBEGINNING	= "xsBeginning";
+
+	private static final long		serialVersionUID	= -511933825464087092L;
 }
