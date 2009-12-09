@@ -28,7 +28,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
@@ -274,8 +273,7 @@ public class SGFilterVisUI extends ComponentUI {
 		return clip;
 	}
 
-	private class InputHandler extends MouseInputAdapter implements
-			MouseMotionListener, KeyListener {
+	private class InputHandler extends MouseInputAdapter implements KeyListener {
 
 		private int			markerLeft;
 
