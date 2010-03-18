@@ -173,7 +173,7 @@ public class MeanValuePadder implements Preprocessor {
 
 	/**
 	 * 
-	 * @param paddingLeft
+	 * @param paddingRight
 	 *            enables or disables right padding
 	 */
 	public void setPaddingRight(boolean paddingRight) {
