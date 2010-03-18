@@ -26,7 +26,7 @@ import org.apache.commons.math.linear.RealMatrixImpl;
 
 /**
  * Savitzky-Golay filter implementation. For more information see
- * {@linkplain http://www.nrbook.com/a/bookcpdf/c14-8.pdf}. This implementation,
+ * http://www.nrbook.com/a/bookcpdf/c14-8.pdf. This implementation,
  * however, does not use FFT
  * 
  * @author Marcin Rzeźnicki
