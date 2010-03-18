@@ -12,3 +12,7 @@ Initial import of the project
 == v1_1 ==
 
   * Added DataFilter interface which adds ability to filter data points based on some algorithm. Currently package contains one implementation - based on [http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm Ramer-Douglas-Peucker algorithm]
+
+== v1_2 ==
+
+  * Now bundled with commons-math 2.0 . Build contains full debug information, previously omitted. Source code underwent small re-organization
