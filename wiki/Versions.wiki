@@ -16,3 +16,9 @@ Initial import of the project
 == v1_2 ==
 
   * Now bundled with commons-math 2.0 . Build contains full debug information, previously omitted. Source code underwent small re-organization
+
+== SGFilterVis 2 ==
+
+  * Few annoying bugs have been fixed - most notably invalid refreshing of selected point
+  * Zooming has been redesigned
+  * Now uses Liquid LAF (https://liquidlnf.dev.java.net/)
