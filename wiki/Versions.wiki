@@ -17,6 +17,10 @@ Initial import of the project
 
   * Now bundled with commons-math 2.0 . Build contains full debug information, previously omitted. Source code underwent small re-organization
 
+=== r25 ===
+
+  * Changed partial sum type from float to double which will lead to improved accuracy when applying filter to large numbers 
+
 == SGFilterVis 2 ==
 
   * Few annoying bugs have been fixed - most notably invalid refreshing of selected point
