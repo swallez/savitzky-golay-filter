@@ -20,11 +20,19 @@ public class FilterTestCase {
         }
     }
 
+    private void assertResultsEqual(double[] results, double[] real) {
+        for (int i = 0; i < real.length; i++) {
+            assertEquals(real[i],
+                         results[i],
+                         0.001);
+        }
+    }
+
     private void assertResultsEqual(float[] results, double[] real) {
         for (int i = 0; i < real.length; i++) {
             assertEquals(real[i],
                          results[i],
-                         0.01);
+                         0.1);
         }
     }
 
@@ -83,60 +91,118 @@ public class FilterTestCase {
 
     @Test
     public final void testDouglasPeuckerFilter() {
-        double[] coeffs = SGFilter.computeSGCoefficients(5,
-                                                         5,
-                                                         4);
-        float[] data = new float[]{2.9f,
-                                   1.3f,
-                                   1.5f,
-                                   1.6f,
-                                   1.6f,
-                                   1,
-                                   1.5f,
-                                   2,
-                                   1.5f,
-                                   1,
-                                   1,
-                                   1,
-                                   1,
-                                   1,
-                                   1};
-        double[] real = new double[]{1.5680637,
-                                     1.3634019,
-                                     1.223775};
-        SGFilter sgFilter = new SGFilter(5,
-                                         5);
-        sgFilter.appendDataFilter(new RamerDouglasPeuckerFilter(0.5));
-        float[] smooth = sgFilter.smooth(data,
-                                         5,
-                                         10,
-                                         coeffs);
-        assertResultsEqual(smooth,
-                           real);
+        double[] data = new double[]{2.9,
+                                     1.3,
+                                     1.5,
+                                     1.6,
+                                     1.6,
+                                     1,
+                                     1.5,
+                                     2,
+                                     1.5,
+                                     1,
+                                     1,
+                                     1,
+                                     1,
+                                     1,
+                                     1};
+        double[] result = new RamerDouglasPeuckerFilter(0.5).filter(data);
+        double[] real = new double[]{2.9, 1.3, 1.6, 1, 2, 1, 1};
+        assertResultsEqual(result, real);
     }
 
     @Test
-    public final void testSmooth1() {
-        float[] data = new float[]{8916.81f,
-                                   8934.24f,
-                                   9027.06f,
-                                   9160.79f,
-                                   7509.14f};
-        float[] leftPad = new float[]{8915.06f,
-                                      8845.53f,
-                                      9064.17f,
-                                      8942.09f,
-                                      8780.87f};
-        double[] realResult1 = new double[]{8989.485464,
-                                            9070.934158,
-                                            8957.906284,
-                                            8577.50381,
-                                            8055.909912};
-        double[] realResult2 = new double[]{9039.854903,
-                                            8995.380001,
-                                            8854.369105,
-                                            8641.864759,
-                                            8456.067118};
+    public final void testMeanValuePadderLeft() {
+        double[] data = new double[]{0, 0, 0, 0, 0,
+                                     8915.06,
+                                     8845.53,
+                                     9064.17,
+                                     8942.09,
+                                     8780.87,
+                                     8916.81,
+                                     8934.24,
+                                     9027.06,
+                                     9160.79,
+                                     7509.14};
+        double[] real = new double[]{8909.544000000002, 8909.544000000002,
+                                     8909.544000000002, 8909.544000000002,
+                                     8909.544000000002,
+                                     8915.06,
+                                     8845.53,
+                                     9064.17,
+                                     8942.09,
+                                     8780.87,
+                                     8916.81,
+                                     8934.24,
+                                     9027.06,
+                                     9160.79,
+                                     7509.14};
+        new MeanValuePadder(10, true, false).apply(data);
+        assertResultsEqual(data, real);
+    }
+
+    @Test
+    public final void testLinearizer() {
+        double[] data = new double[]{6945.43,
+                                     0,
+                                     0,
+                                     7221.76,
+                                     4092.77,
+                                     6607.28,
+                                     6867.01};
+        double[] real = new double[]{6945.43,
+                                     0,
+                                     0,
+                                     2202.426666666667,
+                                     4404.853333333333,
+                                     6607.280000000001,
+                                     6867.01};
+        new Linearizer(0.08f).apply(data);
+        assertResultsEqual(data, real);
+    }
+
+    @Test
+    public final void testMeanValuePadderRight() {
+        double[] data = new double[]{8915.06,
+                                     8845.53,
+                                     9064.17,
+                                     8942.09,
+                                     8780.87,
+                                     8916.81,
+                                     8934.24,
+                                     9027.06,
+                                     9160.79,
+                                     7509.14,
+                                     0, 0, 0, 0};
+        double[] real = new double[]{8915.06,
+                                     8845.53,
+                                     9064.17,
+                                     8942.09,
+                                     8780.87,
+                                     8916.81,
+                                     8934.24,
+                                     9027.06,
+                                     9160.79,
+                                     7509.14,
+                                     8709.608, 8709.608, 8709.608, 8709.608};
+        new MeanValuePadder(10, false, true).apply(data);
+        assertResultsEqual(data, real);
+    }
+
+    @Test
+    public final void testSmooth() {
+        float[] data = new float[]{8.91f,
+                                   8.84f,
+                                   9.06f,
+                                   8.94f,
+                                   8.78f};
+        float[] leftPad = new float[]{8.91f,
+                                      8.93f,
+                                      9.02f,
+                                      9.16f,
+                                      7.50f};
+        double[] realResult = new double[]{8.56394, 8.740239999999998, 8.962772,
+                                           9.077350000000001, 8.80455};
 
         double[] coeffs = SGFilter.computeSGCoefficients(5,
                                                          5,
@@ -146,65 +212,16 @@ public class FilterTestCase {
         SGFilter sgFilter = new SGFilter(5,
                                          5);
         sgFilter.appendPreprocessor(padder1);
-        float[] smooth1 = sgFilter.smooth(data,
-                                          leftPad,
-                                          new float[0],
-                                          coeffs);
-        assertResultsEqual(smooth1,
-                           realResult1);
-        MeanValuePadder padder2 = new MeanValuePadder(10,
-                                                      false,
-                                                      true);
-        sgFilter.removePreprocessor(padder1);
-        sgFilter.appendPreprocessor(padder2);
-        float[] smooth2 = sgFilter.smooth(data,
-                                          leftPad,
-                                          new float[0],
-                                          coeffs);
-        assertResultsEqual(smooth2,
-                           realResult2);
-    }
-
-    @Test
-    public final void testSmooth2() {
-        float[] data = new float[]{6945.43f,
-                                   0f,
-                                   0f,
-                                   7221.76f,
-                                   4092.77f,
-                                   6607.28f,
-                                   6867.01f};
-        double[] realResult = new double[]{7204.79,
-                                           7098.04,
-                                           6937.25,
-                                           6806.47,
-                                           6803.55};
-        double[] coeffs = SGFilter.computeSGCoefficients(5,
-                                                         5,
-                                                         4);
-        ZeroEliminator preprocessor1 = new ZeroEliminator(false);
-        ContinuousPadder preprocessor2 = new ContinuousPadder(true,
-                                                              false);
-        MeanValuePadder preprocessor4 = new MeanValuePadder(10,
-                                                            false,
-                                                            true);
-        Linearizer preprocessor3 = new Linearizer(0.08f);
-        SGFilter sgFilter = new SGFilter(5,
-                                         5);
-        sgFilter.appendPreprocessor(preprocessor1);
-        sgFilter.appendPreprocessor(preprocessor2);
-        sgFilter.appendPreprocessor(preprocessor3);
-        sgFilter.appendPreprocessor(preprocessor4);
         float[] smooth = sgFilter.smooth(data,
-                                         2,
-                                         data.length,
+                                         leftPad,
+                                         new float[0],
                                          coeffs);
         assertResultsEqual(smooth,
                            realResult);
     }
 
     @Test
-    public final void testSmooth3() {
+    public final void testSmoothWithBias() {
         double[] coeffs5_5 = SGFilter.computeSGCoefficients(5,
                                                             5,
                                                             4);
@@ -214,24 +231,24 @@ public class FilterTestCase {
         double[] coeffs4_5 = SGFilter.computeSGCoefficients(4,
                                                             5,
                                                             4);
-        float[] data = new float[]{12680.43f,
-                                   18316.83f,
-                                   18316.83f,
-                                   18316.83f,
-                                   18316.83f,
-                                   18120.89f,
-                                   18120.89f,
-                                   18897.22f,
-                                   18897.22f,
-                                   18470.61f,
-                                   18470.61f,
-                                   18470.61f,
-                                   18470.61f};
-        double[] real = new double[]{18129.17,
-                                     18018.18,
-                                     18426.96,
-                                     18598.67,
-                                     18727.08};
+        float[] data = new float[]{1.26f,
+                                   1.83f,
+                                   1.83f,
+                                   1.83f,
+                                   1.83f,
+                                   1.81f,
+                                   1.81f,
+                                   1.88f,
+                                   1.88f,
+                                   1.84f,
+                                   1.84f,
+                                   1.84f,
+                                   1.84f};
+        double[] real = new double[]{1.7939,
+                                     1.80085,
+                                     1.83971,
+                                     1.85462,
+                                     1.8452};
         SGFilter sgFilter = new SGFilter(5,
                                          5);
         float[] smooth = sgFilter.smooth(data,
