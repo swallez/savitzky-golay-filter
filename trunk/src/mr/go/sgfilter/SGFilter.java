@@ -385,7 +385,7 @@ public class SGFilter {
 		for (int b = bias; b > 0; b--) {
 			sg = coeffs[coeffs.length - b];
 			int x = (nl + bias) - b;
-			float sum = 0;
+			double sum = 0;
 			for (int i = -nl + b; i <= nr; i++) {
 				sum += dataCopy[x + i] * sg[nl - b + i];
 			}
@@ -393,7 +393,7 @@ public class SGFilter {
 		}
 		sg = coeffs[0];
 		for (int x = nl + bias; x < n - nr - bias; x++) {
-			float sum = 0;
+			double sum = 0;
 			for (int i = -nl; i <= nr; i++) {
 				sum += dataCopy[x + i] * sg[nl + i];
 			}
@@ -402,7 +402,7 @@ public class SGFilter {
 		for (int b = 1; b <= bias; b++) {
 			sg = coeffs[b];
 			int x = (n - nr - bias) + (b - 1);
-			float sum = 0;
+			double sum = 0;
 			for (int i = -nl; i <= nr - b; i++) {
 				sum += dataCopy[x + i] * sg[nl + i];
 			}
