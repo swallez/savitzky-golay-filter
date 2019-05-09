@@ -35,7 +35,7 @@
             </classpath>
             <formatter type="xml"/>
             <formatter type="brief" usefile="false"/>
-            <test name="mr.go.sgfilter.tests.FilterTestCase" haltonfailure="no">
+            <test name="mr.go.sgfilter.FilterTestCase" haltonfailure="no">
             </test>
         </junit>
     </target>

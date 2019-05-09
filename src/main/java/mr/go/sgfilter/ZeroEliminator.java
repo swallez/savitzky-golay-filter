@@ -43,82 +43,82 @@ package mr.go.sgfilter;
  * {@link #isAlignToLeft() alignToLeft} is true;
  * <tt>[0,0,0,1,2,3,3,4,4,4,0]</tt> - otherwise
  * </p>
- * 
+ *
  * @author Marcin Rzeźnicki
- * 
+ *
  */
 public class ZeroEliminator implements Preprocessor {
 
-	private boolean alignToLeft;
+  private boolean alignToLeft;
 
-	/**
-	 * Default constructor: {@code alignToLeft} is {@code false}
-	 * 
-	 * @see #ZeroEliminator(boolean)
-	 */
-	public ZeroEliminator() {
+  /**
+   * Default constructor: {@code alignToLeft} is {@code false}
+   *
+   * @see #ZeroEliminator(boolean)
+   */
+  public ZeroEliminator() {
 
-	}
+  }
 
-	/**
-	 * 
-	 * @param alignToLeft
-	 *            if {@code true} zeros will be replaced with non-zero element
-	 *            to the left, if {@code false} - to the right
-	 */
-	public ZeroEliminator(boolean alignToLeft) {
-		this.alignToLeft = alignToLeft;
-	}
+  /**
+   *
+   * @param alignToLeft
+   *            if {@code true} zeros will be replaced with non-zero element
+   *            to the left, if {@code false} - to the right
+   */
+  public ZeroEliminator(boolean alignToLeft) {
+    this.alignToLeft = alignToLeft;
+  }
 
-	@Override
-	public void apply(double[] data) {
-		int n = data.length;
-		int l = 0, r = 0;
-		// seek first non-zero cell
-		for (int i = 0; i < n; i++) {
-			if (data[i] != 0) {
-				l = i;
-				break;
-			}
-		}
-		// seek last non-zero cell
-		for (int i = n - 1; i >= 0; i--) {
-			if (data[i] != 0) {
-				r = i;
-				break;
-			}
-		}
-		// eliminate 0s
-		if (alignToLeft)
-			for (int i = l + 1; i < r; i++) {
-				if (data[i] == 0) {
-					data[i] = data[i - 1];
-				}
-			}
-		else
-			for (int i = r - 1; i > l; i--) {
-				if (data[i] == 0) {
-					data[i] = data[i + 1];
-				}
-			}
-	}
+  @Override
+  public void apply(double[] data) {
+    int n = data.length;
+    int l = 0, r = 0;
+    // seek first non-zero cell
+    for (int i = 0; i < n; i++) {
+      if (data[i] != 0) {
+        l = i;
+        break;
+      }
+    }
+    // seek last non-zero cell
+    for (int i = n - 1; i >= 0; i--) {
+      if (data[i] != 0) {
+        r = i;
+        break;
+      }
+    }
+    // eliminate 0s
+    if (alignToLeft)
+      for (int i = l + 1; i < r; i++) {
+        if (data[i] == 0) {
+          data[i] = data[i - 1];
+        }
+      }
+    else
+      for (int i = r - 1; i > l; i--) {
+        if (data[i] == 0) {
+          data[i] = data[i + 1];
+        }
+      }
+  }
 
-	/**
-	 * 
-	 * @return {@code alignToLeft}
-	 */
-	public boolean isAlignToLeft() {
-		return alignToLeft;
-	}
+  /**
+   *
+   * @return {@code alignToLeft}
+   */
+  public boolean isAlignToLeft() {
+    return alignToLeft;
+  }
 
-	/**
-	 * 
-	 * @param alignToLeft
-	 *            if {@code true} zeros will be replaced with non-zero element
-	 *            to the left, if {@code false} - to the right
-	 */
-	public void setAlignToLeft(boolean alignToLeft) {
-		this.alignToLeft = alignToLeft;
-	}
+  /**
+   *
+   * @param alignToLeft
+   *            if {@code true} zeros will be replaced with non-zero element
+   *            to the left, if {@code false} - to the right
+   */
+  public void setAlignToLeft(boolean alignToLeft) {
+    this.alignToLeft = alignToLeft;
+  }
 
 }
