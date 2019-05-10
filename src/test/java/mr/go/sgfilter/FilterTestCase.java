@@ -14,33 +14,26 @@ public class FilterTestCase {
 
   private void assertCoeffsEqual(double[] coeffs, double[] tabularCoeffs) {
     for (int i = 0; i < tabularCoeffs.length; i++) {
-      assertEquals(tabularCoeffs[i],
-          coeffs[i],
-          0.001);
+      assertEquals(tabularCoeffs[i], coeffs[i], 0.001);
     }
   }
 
   private void assertResultsEqual(double[] results, double[] real) {
     for (int i = 0; i < real.length; i++) {
-      assertEquals(real[i],
-          results[i],
-          0.001);
+      assertEquals(real[i], results[i], 0.001);
     }
   }
 
   private void assertResultsEqual(float[] results, double[] real) {
     for (int i = 0; i < real.length; i++) {
-      assertEquals(real[i],
-          results[i],
-          0.1);
+      assertEquals(real[i], results[i], 0.1);
     }
   }
 
   @Test
   public final void testComputeSGCoefficients() {
-    double[] coeffs = SGFilter.computeSGCoefficients(5,
-        5,
-        2);
+    System.out.print("Testing testComputeSGCoefficients()…");
+    double[] coeffs = SGFilter.computeSGCoefficients(5, 5, 2);
     double[] tabularCoeffs = new double[]{
         -0.084,
         0.021,
@@ -70,27 +63,25 @@ public class FilterTestCase {
         -0.023,
         -0.105,
         0.042};
-    assertEquals(11,
-        coeffs.length);
-    assertCoeffsEqual(coeffs,
-        tabularCoeffs);
-    coeffs = SGFilter.computeSGCoefficients(4,
-        0,
-        2);
-    tabularCoeffs = new double[]{0.086,
+    assertEquals(11, coeffs.length);
+    assertCoeffsEqual(coeffs, tabularCoeffs);
+    coeffs = SGFilter.computeSGCoefficients(4, 0, 2);
+    tabularCoeffs = new double[]{
+        0.086,
         -0.143,
         -0.086,
         0.257,
         0.886};
-    assertEquals(5,
-        coeffs.length);
-    assertCoeffsEqual(coeffs,
-        tabularCoeffs);
+    assertEquals(5, coeffs.length);
+    assertCoeffsEqual(coeffs, tabularCoeffs);
+    System.out.println("success.");
   }
 
   @Test
   public final void testDouglasPeuckerFilter() {
-    double[] data = new double[]{2.9,
+    System.out.print("Testing testDouglasPeuckerFilter()…");
+    double[] data = new double[]{
+        2.9,
         1.3,
         1.5,
         1.6,
@@ -108,11 +99,14 @@ public class FilterTestCase {
     double[] result = new RamerDouglasPeuckerFilter(0.5).filter(data);
     double[] real = new double[]{2.9, 1.3, 1.6, 1, 2, 1, 1};
     assertResultsEqual(result, real);
+    System.out.println("success.");
   }
 
   @Test
   public final void testMeanValuePadderLeft() {
-    double[] data = new double[]{0, 0, 0, 0, 0,
+    System.out.print("Testing testMeanValuePadderLeft()…");
+    double[] data = new double[]{
+        0, 0, 0, 0, 0,
         8915.06,
         8845.53,
         9064.17,
@@ -123,8 +117,11 @@ public class FilterTestCase {
         9027.06,
         9160.79,
         7509.14};
-    double[] real = new double[]{8909.544000000002, 8909.544000000002,
-        8909.544000000002, 8909.544000000002,
+    double[] real = new double[]{
+        8909.544000000002,
+        8909.544000000002,
+        8909.544000000002,
+        8909.544000000002,
         8909.544000000002,
         8915.06,
         8845.53,
@@ -138,10 +135,12 @@ public class FilterTestCase {
         7509.14};
     new MeanValuePadder(10, true, false).apply(data);
     assertResultsEqual(data, real);
+    System.out.println("success.");
   }
 
   @Test
   public final void testLinearizer() {
+    System.out.print("Testing testLinearizer()…");
     double[] data = new double[]{6945.43,
         0,
         0,
@@ -158,11 +157,14 @@ public class FilterTestCase {
         6867.01};
     new Linearizer(0.08f).apply(data);
     assertResultsEqual(data, real);
+    System.out.println("success.");
   }
 
   @Test
   public final void testMeanValuePadderRight() {
-    double[] data = new double[]{8915.06,
+    System.out.print("Testing testMeanValuePadderRight()…");
+    double[] data = new double[]{
+        8915.06,
         8845.53,
         9064.17,
         8942.09,
@@ -173,7 +175,8 @@ public class FilterTestCase {
         9160.79,
         7509.14,
         0, 0, 0, 0};
-    double[] real = new double[]{8915.06,
+    double[] real = new double[]{
+        8915.06,
         8845.53,
         9064.17,
         8942.09,
@@ -186,51 +189,47 @@ public class FilterTestCase {
         8709.608, 8709.608, 8709.608, 8709.608};
     new MeanValuePadder(10, false, true).apply(data);
     assertResultsEqual(data, real);
+    System.out.println("success.");
   }
 
   @Test
   public final void testSmooth() {
-    float[] data = new float[]{8.91f,
+    System.out.print("Testing testSmooth()…");
+    float[] data = new float[]{
+        8.91f,
         8.84f,
         9.06f,
         8.94f,
         8.78f};
-    float[] leftPad = new float[]{8.91f,
+    float[] leftPad = new float[]{
+        8.91f,
         8.93f,
         9.02f,
         9.16f,
         7.50f};
-    double[] realResult = new double[]{8.56394, 8.740239999999998, 8.962772,
-        9.077350000000001, 8.80455};
-
-    double[] coeffs = SGFilter.computeSGCoefficients(5,
-        5,
-        4);
-    ContinuousPadder padder1 = new ContinuousPadder(false,
-        true);
-    SGFilter sgFilter = new SGFilter(5,
-        5);
+    double[] realResult = new double[]{
+        8.56394,
+        8.740239999999998,
+        8.962772,
+        9.077350000000001,
+        8.80455};
+    double[] coeffs = SGFilter.computeSGCoefficients(5,5, 4);
+    ContinuousPadder padder1 = new ContinuousPadder(false, true);
+    SGFilter sgFilter = new SGFilter(5, 5);
     sgFilter.appendPreprocessor(padder1);
-    float[] smooth = sgFilter.smooth(data,
-        leftPad,
-        new float[0],
-        coeffs);
-    assertResultsEqual(smooth,
-        realResult);
+    float[] smooth = sgFilter.smooth(data, leftPad, new float[0], coeffs);
+    assertResultsEqual(smooth, realResult);
+    System.out.println("success.");
   }
 
   @Test
   public final void testSmoothWithBias() {
-    double[] coeffs5_5 = SGFilter.computeSGCoefficients(5,
-        5,
-        4);
-    double[] coeffs5_4 = SGFilter.computeSGCoefficients(5,
-        4,
-        4);
-    double[] coeffs4_5 = SGFilter.computeSGCoefficients(4,
-        5,
-        4);
-    float[] data = new float[]{1.26f,
+    System.out.print("Testing testSmoothWithBias()…");
+    double[] coeffs5_5 = SGFilter.computeSGCoefficients(5, 5, 4);
+    double[] coeffs5_4 = SGFilter.computeSGCoefficients(5, 4, 4);
+    double[] coeffs4_5 = SGFilter.computeSGCoefficients(4, 5, 4);
+    float[] data = new float[]{
+        1.26f,
         1.83f,
         1.83f,
         1.83f,
@@ -243,22 +242,15 @@ public class FilterTestCase {
         1.84f,
         1.84f,
         1.84f};
-    double[] real = new double[]{1.7939,
+    double[] real = new double[]{
+        1.7939,
         1.80085,
         1.83971,
         1.85462,
         1.8452};
-    SGFilter sgFilter = new SGFilter(5,
-        5);
-    float[] smooth = sgFilter.smooth(data,
-        4,
-        9,
-        1,
-        new double[][]{
-            coeffs5_5,
-            coeffs5_4,
-            coeffs4_5});
-    assertResultsEqual(smooth,
-        real);
+    SGFilter sgFilter = new SGFilter(5, 5);
+    float[] smooth = sgFilter.smooth(data, 4, 9, 1, new double[][]{coeffs5_5, coeffs5_4, coeffs4_5});
+    assertResultsEqual(smooth, real);
+    System.out.println("success.");
   }
 }

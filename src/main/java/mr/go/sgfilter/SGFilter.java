@@ -22,7 +22,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.math.linear.RealMatrixImpl;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.LUDecomposition;
+import org.apache.commons.math3.linear.DecompositionSolver;
+import org.apache.commons.math3.linear.RealVector;
+
 
 /**
  * Savitzky-Golay filter implementation. For more information see
@@ -51,7 +56,7 @@ public class SGFilter {
   public static double[] computeSGCoefficients(int nl, int nr, int degree) {
     if (nl < 0 || nr < 0 || nl + nr < degree)
       throw new IllegalArgumentException("Bad arguments");
-    RealMatrixImpl matrix = new RealMatrixImpl(degree + 1, degree + 1);
+    Array2DRowRealMatrix matrix = new Array2DRowRealMatrix(degree + 1, degree + 1);
     double[][] a = matrix.getDataRef();
     double sum;
     for (int i = 0; i <= degree; i++) {
@@ -64,14 +69,25 @@ public class SGFilter {
         a[i][j] = sum;
       }
     }
-    double[] b = new double[degree + 1];
-    b[0] = 1;
-    b = matrix.solve(b);
+    // double[] b = new double[degree + 1];
+    // b[0] = 1;
+    //b = matrix.solve(b);
+
+    RealVector b = new ArrayRealVector(degree + 1);
+
+    DecompositionSolver solver = new LUDecomposition(matrix).getSolver();
+
+    // b = solver.solve(b);
+
+    b.setEntry(0, 1);
+
+    b = solver.solve(b);
+
     double[] coeffs = new double[nl + nr + 1];
     for (int n = -nl; n <= nr; n++) {
-      sum = b[0];
+      sum = b.getEntry(0);
       for (int m = 1; m <= degree; m++)
-        sum += b[m] * pow(n, m);
+        sum += b.getEntry(m) * pow(n, m);
       coeffs[n + nl] = sum;
     }
     return coeffs;

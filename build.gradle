@@ -27,3 +27,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+test {
+    systemProperties System.properties
+    testLogging {
+        showStandardStreams = true
+    }
+}
